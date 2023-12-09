@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import LandingPage from "./pages/landingPage";
 
 function App() {
+
+  useEffect(() => {
+    const receiveMessage = (event) => {
+      const parameter = event.data;
+
+      if (parameter.type === 'webpackWarnings' || parameter.type === 'webpackOk') return
+
+      localStorage.setItem('customerToken', parameter?.token)
+      localStorage.setItem('baId', parameter?.id)
+    }
+
+    window.addEventListener('message', receiveMessage)
+
+    return () => {
+      window.removeEventListener('message', receiveMessage)
+    }
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <LandingPage />
     </div>
   );
 }
 
-export default App;
+export default App
